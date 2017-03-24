@@ -1,0 +1,11 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="$(CasablancaIncludeDir)..\..\cpprestsdk\Build\Common.Build.settings" />
+
+  <ItemGroup>
+      <ProjectFile Include="xover_client\dirs.proj"/>
+      <ProjectFile Include="xover_server\dirs.proj"/>
+  </ItemGroup>
+  <Import Project="$(TargetsPath)\Common.Build.Traversal.targets" />
+
+</Project>
