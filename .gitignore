@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/xover.VC.VC.opendb
+/xover.VC.db
+/ipch/CASABLANCA140-7971f5a2
+/.vs/xover/v14
+/packages
