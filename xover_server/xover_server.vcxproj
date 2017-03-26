@@ -76,9 +76,10 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NWOL_MTSUPPORT; NOMINMAX; NWOL_DEBUG_ENABLED; _WINDOWS;WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\nwol\nwol; ..\..\nwol\gods; $(CasablancaIncludeDir);$(CasablancaIncludeDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\nwol\nwol; ..\..\nwol\gods; ..\..\nwol\tictactoe; $(CasablancaIncludeDir);$(CasablancaIncludeDir)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -95,9 +96,10 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NWOL_MTSUPPORT; NOMINMAX; NWOL_DEBUG_ENABLED; _WINDOWS;WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\nwol\nwol; ..\..\nwol\gods; $(CasablancaIncludeDir);$(CasablancaIncludeDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\nwol\nwol; ..\..\nwol\gods; ..\..\nwol\tictactoe; $(CasablancaIncludeDir);$(CasablancaIncludeDir)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -114,9 +116,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NWOL_MTSUPPORT; NOMINMAX; _WINDOWS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\nwol\nwol; ..\..\nwol\gods; $(CasablancaIncludeDir);$(CasablancaIncludeDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\nwol\nwol; ..\..\nwol\gods; ..\..\nwol\tictactoe; $(CasablancaIncludeDir);$(CasablancaIncludeDir)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -135,9 +138,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NWOL_MTSUPPORT; NOMINMAX; _WINDOWS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\nwol\nwol; ..\..\nwol\gods; $(CasablancaIncludeDir);$(CasablancaIncludeDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\nwol\nwol; ..\..\nwol\gods; ..\..\nwol\tictactoe; $(CasablancaIncludeDir);$(CasablancaIncludeDir)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -155,6 +159,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\nwol\tictactoe\TicTacToe.h" />
     <ClInclude Include="dealer.h" />
     <ClInclude Include="messagetypes.h" />
     <ClInclude Include="table.h" />

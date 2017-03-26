@@ -13,11 +13,10 @@
 # include <sys/time.h>
 #endif
 
-int								xover::CDealerTable::FindPlayer					(const utility::string_t &name)				{
-    int														idx								= 0;
-    for (auto iter = Players.begin(); iter != Players.end(); iter++, idx++)
-        if ( iter->Name == name )
-            return idx;
+int32_t							xover::CDealerTable::FindPlayer					(const utility::string_t &name)				{
+    for (size_t iPlayer = 0, playerCount = Players.size(); iPlayer < playerCount; ++iPlayer)
+        if ( Players[iPlayer].Name == name )
+            return (int32_t)iPlayer;
     return -1;
 }
 
@@ -25,9 +24,7 @@ int								xover::CDealerTable::FindPlayer					(const utility::string_t &name)		
 //       Change the logic to anticipate that a new player may come to the table at any point and wait until the next round.
 bool							xover::CDealerTable::AddPlayer						(const CPlayer &player)						{
     pplx::extensibility::scoped_critical_section_t			lck								(ResponseLock);
-
     int														idx								= FindPlayer(player.Name);
-
     if ( idx > 0 )
         return false;
 
@@ -41,14 +38,14 @@ bool							xover::CDealerTable::AddPlayer						(const CPlayer &player)						{
 bool							xover::CDealerTable::RemovePlayer					(const utility::string_t &name)				{
     pplx::extensibility::scoped_critical_section_t			lck								(ResponseLock);
 
-    std::vector<TMessageWrapper	>::const_iterator			evnts							= Responses			.begin();
-    std::vector<EBJStatus		>::const_iterator			pends							= Pendingrefresh	.begin();
-
-    for (auto iter = Players.begin(); iter != Players.end(); iter++, evnts++, pends++) {
-        if ( iter->Name == name ) {
-            Players			.erase(iter );
-            Responses		.erase(evnts);
-            Pendingrefresh	.erase(pends);
+    std::vector<TMessageWrapper	>::const_iterator			iEvent							= Responses			.begin();
+    std::vector<EBJStatus		>::const_iterator			iPending						= Pendingrefresh	.begin();
+	std::vector<CPlayer			>::const_iterator			iPlayer							= Players			.begin();
+    for ( ; iPlayer != Players.end(); iPlayer++, iEvent++, iPending++) {
+        if ( iPlayer->Name == name ) {
+            Players			.erase(iPlayer	);
+            Responses		.erase(iEvent	);
+            Pendingrefresh	.erase(iPending	);
             return true;
         }
     }
@@ -140,29 +137,35 @@ bool							xover::CDealerTable::RemovePlayer					(const utility::string_t &name)
 	return 0;
 }
 
-::nwol::error_t					xover::CDealerTable::PayUp							(size_t idx)								{
-	CPlayer													& player						= Players[idx];
-		 if ( player.Hand.Result == CBJHand::HR_PlayerWin		) { player.Balance += player.Hand.Bet*2;	player.Hand.Bet = 0.0;	}
-	else if ( player.Hand.Result == CBJHand::HR_ComputerWin		) {											player.Hand.Bet = 0.0;	}
-	else if ( player.Hand.Result == CBJHand::HR_PlayerBlackJack	) { player.Balance += player.Hand.Bet*2.5;	player.Hand.Bet = 0.0;	}
-	else if ( player.Hand.Result == CBJHand::HR_Push			) { player.Balance += player.Hand.Bet;		player.Hand.Bet = 0.0;	}
+::nwol::error_t					xover::CDealerTable::PayUp							(size_t playerIndex)						{
+	CPlayer													& player						= Players[playerIndex];
+	CBJHand													& playerHand					= player.Hand;
+	switch(playerHand.Result) {
+	case CBJHand::HR_PlayerWin			: player.Balance += playerHand.Bet*2;	playerHand.Bet = 0.0;	break;
+	case CBJHand::HR_ComputerWin		:										playerHand.Bet = 0.0;	break;
+	case CBJHand::HR_PlayerBlackJack	: player.Balance += playerHand.Bet*2.5;	playerHand.Bet = 0.0;	break;
+	case CBJHand::HR_Push				: player.Balance += playerHand.Bet;		playerHand.Bet = 0.0;	break;
+	default:
+		error_printf("Unknown hand result value: 0x%X", playerHand.Result);
+		return -1;
+	}
 
 	// Handle insurance
-	if ( player.Hand.Insurance > 0 && Players[0].Hand.State == CBJHand::HR_PlayerBlackJack )
-		player.Balance										+= player.Hand.Insurance*3;
-	player.Hand.Insurance								= 0;
+	if ( playerHand.Insurance > 0 && Players[0].Hand.State == CBJHand::HR_PlayerBlackJack )
+		player.Balance										+= playerHand.Insurance*3;
+	playerHand.Insurance								= 0;
 
 	pplx::extensibility::scoped_critical_section_t lck(ResponseLock);
 
-	if (Responses[idx]) {
+	if (Responses[playerIndex]) {
  		web::json::value										jsonTable;						reterr_error_if(errored(AsJSON(jsonTable)), "%s", "Failed to get JSON from table!");
 		CBJPutResponse											putResponse						= {ST_PlaceBet, jsonTable};
 		web::json::value										jsonResponse;					reterr_error_if(errored(putResponse.AsJSON(jsonResponse)), "%s", "Failed to get json from PUT response.");
-		Responses[idx]->reply(web::http::status_codes::OK, jsonResponse);
-		Responses[idx].reset();
+		Responses[playerIndex]->reply(web::http::status_codes::OK, jsonResponse);
+		Responses[playerIndex].reset();
 	}
 	else
-		Pendingrefresh[idx] = ST_PlaceBet;
+		Pendingrefresh[playerIndex]							= ST_PlaceBet;
 
 	return 0;
 }

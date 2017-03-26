@@ -15,10 +15,10 @@ namespace xover
 
 				web::http::experimental::listener::http_listener		Listener						;   
 
-				::nwol::error_t											HandleGet						(web::http::http_request message);
-				::nwol::error_t											HandlePut						(web::http::http_request message);
-				::nwol::error_t											HandlePost						(web::http::http_request message);
-				::nwol::error_t											HandleDelete					(web::http::http_request message);
+				::nwol::error_t											HandleGet						(const web::http::http_request& message);
+				::nwol::error_t											HandlePut						(const web::http::http_request& message);
+				::nwol::error_t											HandlePost						(const web::http::http_request& message);
+				::nwol::error_t											HandleDelete					(const web::http::http_request& message);
 	public:
 																		CDealer							()									{}
 																		CDealer							(utility::string_t url)				: Listener(url)				{

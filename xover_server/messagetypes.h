@@ -1,8 +1,8 @@
 #include "cpprest/json.h"
 #include "cpprest/details/basic_types.h"
-#include "log.h"
+#include "nwol_log.h"
 #include "nwol_error.h"
-#include "enum.h"
+#include "nwol_enum.h"
 
 #include <map>
 
@@ -12,7 +12,7 @@
 namespace xover
 {
 	//enum EBJPossibleMoves	{ PM_None = 0x0, PM_Hit = 0x1, PM_DoubleDown = 0x2, PM_Split = 0x4, PM_All = 0x7 };
-	enum EBJStatus			{ ST_PlaceBet, ST_Refresh, ST_YourTurn, ST_None };
+	enum EBJStatus			{ ST_None, ST_PlaceBet, ST_Refresh, ST_YourTurn };
 
 	GDEFINE_ENUM_TYPE(XOVER_ACTION, uint8_t);
 	GDEFINE_ENUM_VALUE(XOVER_ACTION, 0x00, state		);
@@ -132,13 +132,12 @@ namespace xover
 
 			web::json::value											jCards									= web::json::value::array(Cards.size());
 			if ( RevealBoth ) {
-				int															idx										= 0;
-				for (auto iter = Cards.begin(); iter != Cards.end(); ++iter)
-					jCards[idx++]											= iter->AsJSON();
+				for (size_t iCard = 0, cardCount = Cards.size(); iCard < cardCount; ++iCard)
+					jCards[iCard]											= Cards[iCard].AsJSON();
 			}
 			else {
 				if(Cards.size())
-					jCards[0]												= Cards.begin()->AsJSON();
+					jCards[0]												= Cards[0].AsJSON();
 			}
 			result[CARDS		]									= jCards;
 			return result;
@@ -157,9 +156,9 @@ namespace xover
 
 							::nwol::error_t						AsJSON								(web::json::value& outputValue)										const				{
 			web::json::value											result								= web::json::value::object();
-			result[NAME		]							= web::json::value::string(Name);
-			result[BALANCE	]							= web::json::value::number(Balance);
-			result[HAND		]							= Hand.AsJSON();
+			result[NAME		]										= web::json::value::string(Name);
+			result[BALANCE	]										= web::json::value::number(Balance);
+			result[HAND		]										= Hand.AsJSON();
 
 			outputValue												= result;
 			return 0;
@@ -180,9 +179,8 @@ namespace xover
 			result[CAPACITY	]										= web::json::value::number((double)Capacity);
 
 			web::json::value											jPlayers							= web::json::value::array(Players.size());
-			size_t														idx									= 0;
-			for (auto iter = Players.begin(); iter != Players.end(); ++iter) {
-				::nwol::error_t												errMy								= iter->AsJSON(jPlayers[idx++]);
+			for (uint32_t iPlayer = 0, playerCount = (uint32_t)Players.size(); iPlayer < playerCount; ++iPlayer) {
+				::nwol::error_t												errMy								= Players[iPlayer].AsJSON(jPlayers[iPlayer]);
 				reterr_error_if_errored(errMy, "%s", "Failed to get player as JSON.");
 			}
 			result[PLAYERS]											= jPlayers;
@@ -197,22 +195,22 @@ namespace xover
 
 							::nwol::error_t						AsJSON								(web::json::value& outputValue)										const				{
 			web::json::value											result								= web::json::value::object();
-			result[STATUS	]										= web::json::value::number((double)Status);
+			result[STATUS	]										= web::json::value::number(Status);
 			result[DATA		]										= Data;
 			outputValue												= result;
 			return 0;
 		}
 	};
 
-	static inline		web::json::value					TablesAsJSON						(const std::map<utility::string_t, std::shared_ptr<CBJTable>> & tables)					{
+	static inline		::nwol::error_t						tablesAsJSON						(const std::map<utility::string_t, std::shared_ptr<CBJTable>> & tables, web::json::value& outputTables)					{
 		web::json::value											result								= web::json::value::array();
 		size_t														idx									= 0;
-		for (auto tbl = tables.begin(); tbl != tables.end(); tbl++) {
-			const ::nwol::error_t										errMy 								= tbl->second->AsJSON(result[idx++]);
+		for(const std::pair<utility::string_t, std::shared_ptr<CBJTable>>& table : tables) {
+			const ::nwol::error_t										errMy 								= table.second->AsJSON(result[idx++]);
 			reterr_error_if_errored(errMy, "%s", "Failed to get table from JSON.")
 		}
-
-		return result;
+		outputTables											= result;
+		return 0;
 	}
 } // namespace 
 

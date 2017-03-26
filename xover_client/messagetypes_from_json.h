@@ -2,7 +2,16 @@
 
 namespace xover 
 {
-	static				::nwol::error_t						FromJSON							(web::json::value			& object, CBJPutResponse& outputResponse)					{ outputResponse = { (EBJStatus)(int)(object[STATUS].as_double()), object[DATA] }; return 0; }
+	static				::nwol::error_t						FromJSON							(const web::json::value		& value, CBJPutResponse& outputResponse)					{ 
+		CBJPutResponse												result;
+		const web::json::object										object								= value.as_object();
+		const web::json::object::const_iterator						endElem								= object.end();
+		web::json::object::const_iterator 
+		objectIterator	= object.find(STATUS	);	reterr_error_if(objectIterator == endElem, "key not found: %s.", "STATUS"	) else result.Status	= (xover::EBJStatus)objectIterator->second.as_integer();
+		objectIterator	= object.find(DATA		);	reterr_error_if(objectIterator == endElem, "key not found: %s.", "DATA"		) else result.Data		= objectIterator->second;
+		outputResponse											=  result;
+		return 0; 
+	}
 	static				::nwol::error_t						FromJSON							(const web::json::object	& object, SCard			& outputCard)						{
 		SCard														result;
 		const web::json::object::const_iterator						endElem								= object.end();
@@ -31,7 +40,6 @@ namespace xover
 		outputHand												= result;
 		return 0;
 	}
-
 	static				::nwol::error_t						FromJSON							(const web::json::object& object, CPlayer& outputPlayer)								{
 		CPlayer														result								= {U("")};
 		const web::json::object::const_iterator						endElem								= object.end();
