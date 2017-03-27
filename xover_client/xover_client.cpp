@@ -13,7 +13,6 @@
 
 DEFINE_RUNTIME_INTERFACE_FUNCTIONS(::SApplication, "XOver Client", 0, 1);
 
-#include "messagetypes_from_json.h"
 //namespace xover 
 //{
 //	static				::nwol::error_t						FromJSON							(const web::json::value		& value, CBJPutResponse& outputResponse)					{ 

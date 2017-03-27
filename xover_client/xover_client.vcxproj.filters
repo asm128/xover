@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="messagetypes_from_json.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="xover_client.h">
       <Filter>Header Files</Filter>
     </ClInclude>

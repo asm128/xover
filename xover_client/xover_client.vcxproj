@@ -158,7 +158,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\nwol\tictactoe\TicTacToe.h" />
-    <ClInclude Include="messagetypes_from_json.h" />
     <ClInclude Include="xover_client.h" />
   </ItemGroup>
   <ItemGroup>
