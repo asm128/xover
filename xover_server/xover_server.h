@@ -1,5 +1,5 @@
 #include "application.h"
-#include "Dealer.h"
+#include "cpprest/http_listener.h"
 #include "TicTacToe.h"
 
 #ifndef CROSSOVER_SERVER_H__983264902
@@ -8,7 +8,6 @@
 // Contains the main logic of the black jack dealer.
 class CTicTacToeService {
 	::nwol::array_pod<::ttt::TicTacToe>								Games							;
-	static int														nextId							;
 
 			web::http::experimental::listener::http_listener		Listener						;   
 
@@ -23,16 +22,14 @@ public:
 		Listener.support(web::http::methods::PUT	, std::bind(&CTicTacToeService::HandlePut		, this, std::placeholders::_1));
 		Listener.support(web::http::methods::POST	, std::bind(&CTicTacToeService::HandlePost		, this, std::placeholders::_1));
 		Listener.support(web::http::methods::DEL	, std::bind(&CTicTacToeService::HandleDelete	, this, std::placeholders::_1));
-
-		Games.push_back({});
 	}
 	inline	pplx::task<void>										Open							()									{ return Listener.open	(); }
 	inline	pplx::task<void>										Close							()									{ return Listener.close	(); }
 };
 
 struct SApplication : public ::nwol::SApplicationBase {
-	::xover::CDealer									Dealer;
 	::ttt::TicTacToe									Game;
+	CTicTacToeService									GameHost;
 
 	inline 												SApplication		(::nwol::SRuntimeValues	* runtimeValues)	: SApplicationBase(runtimeValues)	{
 		GUI													= {{320, 200}, {::ttt::TicTacToe::SCREEN_WIDTH, ::ttt::TicTacToe::SCREEN_HEIGHT}};

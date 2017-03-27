@@ -6,13 +6,13 @@
 #define CROSSOVER_CLIENT_H__983264234902
 
 struct SApplication : public ::nwol::SApplicationBase {
-	std::shared_ptr<web::http::client::http_client>		BJDealer				;
 	utility::string_t									UserName				= U("");
 	utility::string_t									Table					= U("");
 	web::json::value									AvailableTables			= web::json::value::array();
 	bool												WasRefresh				= false;
 
 	::ttt::TicTacToe									Game					= {};
+	std::shared_ptr<web::http::client::http_client>		GameClient				= {};
 
 	inline 												SApplication		(::nwol::SRuntimeValues	* runtimeValues)	: SApplicationBase(runtimeValues)	{
 		GUI													= {{320, 200}, {::ttt::TicTacToe::SCREEN_WIDTH, ::ttt::TicTacToe::SCREEN_HEIGHT}};

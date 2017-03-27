@@ -160,14 +160,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\nwol\tictactoe\TicTacToe.h" />
-    <ClInclude Include="dealer.h" />
-    <ClInclude Include="messagetypes.h" />
-    <ClInclude Include="table.h" />
     <ClInclude Include="xover_server.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dealer.cpp" />
-    <ClCompile Include="table.cpp" />
     <ClCompile Include="xover_server.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
